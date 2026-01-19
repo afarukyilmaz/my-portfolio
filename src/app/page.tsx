@@ -179,7 +179,7 @@ export default function Home() {
   ];
   // --- DATA END ---
 
-  // Card Component with Auto-Height Fix for Right Side
+  // Modified Card Component with Mobile Visibility Fix
   const TimelineCard = ({ item, isLeft }: { item: TimelineItem; isLeft?: boolean }) => (
     <div className={`
       group relative 
@@ -206,9 +206,14 @@ export default function Home() {
       </div>
 
       {/* CONTENT */}
-      {/* Increased max-h to 1000px to ensure full text visibility */}
-      <div className="max-h-0 opacity-0 group-hover:max-h-[1000px] group-hover:opacity-100 transition-all duration-500 ease-in-out">
-        <div className="mt-4 pt-4 border-t border-slate-100 text-slate-600 text-sm leading-relaxed">
+      {/* GÜNCELLEME BURADA: Mobilde hep açık (opacity-100), Masaüstünde (md:) gizli ve hover ile açılıyor */}
+      <div className={`
+        transition-all duration-500 ease-in-out mt-4
+        max-h-[2000px] opacity-100 
+        md:mt-0 md:max-h-0 md:opacity-0 md:group-hover:max-h-[1000px] md:group-hover:opacity-100 
+        md:pt-0 group-hover:pt-4
+      `}>
+        <div className="border-t border-slate-100 pt-4 text-slate-600 text-sm leading-relaxed">
           <p className={`mb-2 ${isLeft ? "md:text-right" : "text-left"}`}>{item.description[lang]}</p>
           
           {/* Specific Details */}

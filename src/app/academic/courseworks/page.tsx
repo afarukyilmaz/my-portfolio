@@ -18,7 +18,7 @@ interface CourseworkItem {
 }
 
 export default function CourseworksPage() {
-  const [lang, setLang] = useState<Language>("tr");
+  const [lang, setLang] = useState<Language>("en");
 
   const courseworks: CourseworkItem[] = [
     {

@@ -25,7 +25,7 @@ interface TimelineEra {
 }
 
 export default function Home() {
-  const [lang, setLang] = useState<Language>("tr");
+  const [lang, setLang] = useState<Language>("en");
 
   // --- DATA START ---
   const eras: TimelineEra[] = [

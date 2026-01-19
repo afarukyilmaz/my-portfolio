@@ -14,7 +14,7 @@ interface ProjectItem {
 }
 
 export default function ProjectsPage() {
-  const [lang, setLang] = useState<Language>("tr");
+  const [lang, setLang] = useState<Language>("en");
 
   // Handle hash scrolling on page load (for layout links to work)
   useEffect(() => {

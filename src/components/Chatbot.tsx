@@ -9,7 +9,6 @@ interface Message {
 }
 
 export default function Chatbot() {
-  // Suggestion prompts (Fully English)
   const suggestions = [
     "What is Faruk's educational background?",
     "Tell me about his work at Odeabank.",
@@ -23,26 +22,31 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
-  // Auto-scroll to bottom
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Ref for the scrollable container
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll logic (FIXED)
   useEffect(() => {
-    scrollToBottom();
+    // Sadece mesaj sayısı 1'den fazlaysa (kullanıcı veya AI yazdıysa) kaydır.
+    // İlk açılışta (mesaj sayısı 1 iken) hiçbir şey yapma.
+    if (messages.length > 1 && chatContainerRef.current) {
+      const { scrollHeight, clientHeight } = chatContainerRef.current;
+      chatContainerRef.current.scrollTo({
+        top: scrollHeight - clientHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages]);
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
 
-    // 1. Add User Message immediately
     const userMsg: Message = { role: "user", content: text };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsLoading(true);
 
     try {
-      // 2. Send to our API (The Brain)
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,14 +87,17 @@ export default function Chatbot() {
           <div className="flex items-center gap-2">
             <div className={`w-3 h-3 rounded-full ${isLoading ? "bg-yellow-400 animate-bounce" : "bg-green-400"}`}></div>
             <div>
-                <span className="font-semibold tracking-wide block leading-none">AI Portfolio Assistant</span>
+                <span className="font-semibold tracking-wide block leading-none">Ask Anything About Faruk</span>
                 <span className="text-[10px] text-slate-400 font-light">Powered by GPT-4o</span>
             </div>
           </div>
         </div>
 
-        {/* Messages Area */}
-        <div className="flex-1 p-6 overflow-y-auto bg-slate-50 space-y-4">
+        {/* Messages Area (Scrollable) */}
+        <div 
+            ref={chatContainerRef} // Ref buraya taşındı
+            className="flex-1 p-6 overflow-y-auto bg-slate-50 space-y-4 scroll-smooth"
+        >
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -103,13 +110,13 @@ export default function Chatbot() {
               {msg.content}
             </div>
           ))}
+          
           {/* Loading Indicator */}
           {isLoading && (
             <div className="self-start bg-slate-100 text-slate-500 p-3 rounded-lg text-xs italic animate-pulse">
               Generating response...
             </div>
           )}
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Suggestions Area */}
@@ -132,7 +139,6 @@ export default function Chatbot() {
         <form onSubmit={onSubmit} className="p-4 bg-white border-t border-slate-200 flex gap-3">
           <input
             type="text"
-            // GÜNCELLEME BURADA YAPILDI: "text-slate-900" eklendi.
             className="flex-1 bg-slate-100 text-slate-900 border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-slate-800 outline-none transition placeholder:text-slate-400"
             placeholder="Ask a question about Faruk..."
             value={input}

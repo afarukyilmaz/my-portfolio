@@ -7,7 +7,7 @@ import Image from "next/image";
 type Language = "en" | "tr";
 
 export default function ThesisPage() {
-  const [lang, setLang] = useState<Language>("tr");
+  const [lang, setLang] = useState<Language>("en");
 
   const content = {
     en: {
